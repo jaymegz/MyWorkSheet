@@ -1,0 +1,103 @@
+---
+title: "WorkSheet - 1"
+author: "John Laurence Andica"
+date: "2024-09-04"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+#1. 
+age <- c(34, 28, 22, 36, 27, 18, 52, 39, 42, 29, 35, 31, 27, 22, 37, 34, 19, 20, 57, 49, 50, 37, 46, 25, 17, 37, 42, 53, 41, 51, 35, 24, 33, 41)
+```
+```{r}
+#a. How many data points
+length(age)
+#b. Write the r code and its output
+age
+```
+```{r}
+#2. Find the reciprocal of values for age
+recip <- 1 / age
+```
+
+
+```{r}
+fractions(recip)
+```
+```{r}
+#3. What happen to the new_age?
+new_age <- c(age, 0, age)
+new_age
+#It added a 0 in the middle, andIt assigns the value of age to new_age"
+```
+
+
+```{r}
+
+#4. Sort values for age
+sort(age)
+```
+```{r}
+#5. Find the maximum and minimum value for age"
+max(age)
+min(age)
+```
+```{r}
+#6. Set up a vector named data
+data <- c(2.4, 2.8, 2.1, 2.5, 2.4, 2.2, 2.5, 2.3, 2.5, 2.3, 2.4, 2.7)
+```
+```{r}
+#a. How many data points?
+length(data)
+```
+```{r}
+#6. Generate a new vector for data  where you double every value of the data#
+new_data <- data * 2 
+#The value of the elements in data was doubled
+```
+
+```{r}
+#8. Generate the following scenario
+#8.1
+s1 <-seq(1:100)
+#8.2
+s2 <- seq(20:60)
+#8.3
+m <- mean(s2)
+#8.4
+add1 <- sum(51:91)
+#8.4
+s3 <- seq(1:1000)
+#a.
+allLength <- length(s1) + length(s2) + length(m) + length(add1)
+allLength
+#c
+max(s3[s3 <- 10])
+
+```
+```{r}
+#9.
+Filter(function(i) { all(i %% c(3,5,7) != 0) }, seq(100))
+```
+```{r}
+#10. Generate a sequence backwards of the integers from 1 to 100
+s10 <- seq(100, 1)
+s10
+```
+```{r}
+#11. List all the natural numbers below 25 that are multiplies of 3 or 5"
+vec <- c(24:1)
+s <- Filter(function(i) { all(i %% c(3) == 0 )| all(i %% c(5) == 0)}, vec)
+sum(s)
+#a. How many data points from 10 to 11"
+length(s10) + length(s)
+```
+
+
+
