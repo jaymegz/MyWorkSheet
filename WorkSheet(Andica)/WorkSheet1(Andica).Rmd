@@ -38,7 +38,7 @@ fractions(recip)
 3. Assign also new_age <- c(age, 0, age).
 ```{r}
 new_age <- c(age, 0, age)
-#It added a 0 in the middle, andIt assigns the value of age to new_age
+#It added a 0 in the middle, and it assigns the value of age to new_age
 ```
 4. Sort the values for age.
 
