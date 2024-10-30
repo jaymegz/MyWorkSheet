@@ -1,0 +1,69 @@
+---
+title: "RWorksheet_Andica#4b"
+author: "John Laurence Andica"
+date: "2024-10-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+1. Using the for loop, create an R script that will display a 5x5 matrix as shown in
+Figure 1. It must contain vectorA = [1,2,3,4,5] and a 5 x 5 zero matrix.
+```{r}
+vectorA <- c(1, 2, 3, 4, 5)
+myMatrix <- matrix(0, nrow = 5, ncol = 5)
+for(i in 1:5){
+  for(j in 1:5){
+    myMatrix[i,j] <- abs(vectorA[i] - vectorA[j])
+}
+}
+myMatrix
+
+```
+```{r}
+for(i in 1:5){
+  cat(paste(rep('"*"', i), collapse = " "), "\n")
+}
+```
+3. Get an input from the user to print the Fibonacci sequence starting from the 1st input
+up to 500. Use repeat and break statements. Write the R Scripts and its output.
+```{r}
+firstInteger <- as.integer(readline(prompt = "Enter first integer of Fibonacci Sequence: "))
+secondInteger <- as.integer(readline(prompt = "Enter second integer of Fibonacci Sequence: "))
+myFibonacci <- c(firstInteger, secondInteger)
+repeat{
+  nextNumber <- tail(myFibonacci, 2)[1] + tail(myFibonacci, 2)[2]
+  
+  if(nextNumber > 500){
+    break
+  }
+  myFibonacci <- c(myFibonacci, nextNumber)
+}
+  myFibonacci
+```
+```{r}
+#a.
+my_csv <- read_csv("Shoe_Size.csv")
+head(my_csv)
+#b. 
+maleSubset <- subset(my_csv, Gender == "M")
+femaleSubset <- subset(my_csv, Gender == "F")
+num_males <- nrow(maleSubset)
+num_females <- nrow(femaleSubset)
+cat("Number of observations in male is", num_males,"\n")
+cat("Number of observations in female is", num_females, "\n")
+
+genderCount <- table(my_csv$Gender)
+barplot(genderCount,
+        main = "Number of Males and Females",
+        xlab = "Gender",
+        ylab = "Count",
+        col = c("blue", "violet"),
+        legend = rownames(genderCount))
+
+```
+```{r}
+
+```
+
