@@ -1,0 +1,147 @@
+---
+title: "RWorksheet_Andica#4c"
+author: "John Laurence Andica"
+date: "2024-11-03"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(readr)
+library(readxl)
+library(gridExtra)
+library(forcats)  # Add this line to load the forcats package
+my_mpg <- read.csv("mpg.csv")
+
+categorical_vars <- c("manufacturer", "model", "trans", "drv", "class", "year")
+continuous_vars <- c("displ", "cyl", "cty", "hwy")
+
+manufacturer_model <- my_mpg %>%
+  group_by(manufacturer) %>%
+  summarize(model_num = n_distinct(model)) %>%
+  arrange(desc(model_num))
+
+variations_num <- table(my_mpg$model)
+most_variations_model <- names(variations_num[variations_num == max(variations_num)])
+
+manufacturer_data <- setNames(manufacturer_model$model_num, manufacturer_model$manufacturer)
+
+barplot(manufacturer_data, 
+        main = "Number of Models per Manufacturer",
+        xlab = "Manufacturer",
+        ylab = "Number of Models",
+        col = c("blue", "red", "orange", "yellow", "violet"),
+        las = 3)
+
+variations_num <- my_mpg %>%
+  group_by(model) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+ggplot(variations_num, aes(x = reorder(model, count), y = count)) +
+  geom_bar(stat = "identity", fill = "skyblue") +  
+  coord_flip() +
+  labs(title = "Number of Variations per Model", x = "Model", y = "Count") +
+  theme_minimal()
+
+ggplot(my_mpg, aes(model, manufacturer)) + 
+  geom_point() +
+  labs(title = "Model vs Manufacturer", x = "Model", y = "Manufacturer")
+
+top20_obs <- my_mpg[1:20, ]
+ggplot(top20_obs, aes(x = model, y = year)) +
+  geom_point(color = "blue", size = 2) +
+  labs(title = "Top 20 Observations of Model and Year", x = "Model", y = "Year") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+carNum20 <- top20_obs %>%
+  group_by(model) %>%
+  summarise(count = n())
+
+ggplot(carNum20, aes(x = reorder(model, -count), y = count)) +
+  geom_bar(stat = "identity", fill = "navy") +
+  labs(title = "Top 20 Observations of Number of Cars per Model", x = "Model", y = "Count") +
+  theme_minimal()
+
+ggplot(carNum20, aes(x = reorder(model, count), y = count)) +
+  geom_bar(stat = "identity", fill = "navy") +
+  labs(title = "Top 20 Observations of Number of Cars per Model", x = "Model", y = "Count") +
+  coord_flip() +
+  theme_minimal()
+
+ggplot(my_mpg, aes(x = cyl, y = displ, color = displ)) +
+  geom_point() +
+  labs(title = "Relationship between No. of Cylinders and Engine Displacement", x = "Number of Cylinders", y = "Engine Displacement") +
+  theme_minimal()
+
+ggplot(my_mpg, aes(x = displ, y = hwy, color = cty)) +
+  geom_point() +
+  labs(title = "Relationship between Engine Displacement and Highway Miles per Gallon", x = "Engine Displacement", y = "Highway Miles per Gallon") +
+  theme_minimal()
+
+my_traffic <- read_csv("traffic.csv")
+num_observations <- nrow(my_traffic)
+num_variables <- names(my_traffic)
+
+cat("Number of Observations:", num_observations, "\n")
+cat("Variables in the Dataset:", num_variables, "\n")
+
+junctions <- split(my_traffic, my_traffic$Junction)
+
+plots <- lapply(junctions, function(data) {
+  ggplot(data, aes(x = DateTime, y = Vehicles, group = Junction)) + 
+    geom_line() +
+    labs(title = paste("Traffic Volume at Junction", unique(data$Junction)), x = "Time", y = "Traffic Volume") +
+    theme_minimal()
+})
+
+grid.arrange(grobs = plots, ncol = 2)
+
+my_alexa <- read_excel("alexa_file.xlsx")
+num_observations <- nrow(my_alexa)
+num_columns <- ncol(my_alexa)
+
+cat("Number of Observations:", num_observations, "\n")
+cat("Number of Columns:", num_columns, "\n")
+
+variation_counts <- my_alexa %>%
+  count(variation)
+
+save(variation_counts, file = "variations.RData")
+
+ggplot(variation_counts, aes(x = reorder(variation, -n), y = n, fill = variation)) +
+  geom_bar(stat = "identity", color = "black", show.legend = FALSE) +
+  scale_fill_viridis(discrete = TRUE) +
+  labs(title = "Product Variants and Totals", x = "Variation", y = "Total") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) +
+  coord_flip()
+
+my_alexa$date <- as.Date(my_alexa$date)
+review_counts_by_date <- aggregate(verified_reviews ~ date, data = my_alexa, length)
+
+ggplot(review_counts_by_date, aes(x = date, y = verified_reviews)) +
+  geom_line(color = "blue", size = 1) +
+  labs(title = "Verified Reviews Over Time", x = "Date", y = "Number of Verified Reviews") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+        plot.title = element_text(hjust = 0.5))
+
+ratings_data <- my_alexa %>%
+  group_by(variation) %>%
+  summarise(avg_rating = mean(rating))
+
+ratings_data <- ratings_data %>%
+  mutate(variation = fct_reorder(variation, avg_rating, .desc = TRUE))
+
+ggplot(ratings_data, aes(x = variation, y = avg_rating, fill = variation)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Relationship of Variations and Ratings", x = "Variations", y = "Ratings") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "none") +
+  scale_fill_viridis_d(option = "inferno")
